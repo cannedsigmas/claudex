@@ -78,6 +78,18 @@ SEED_MODELS = [
         "provider": ModelProvider.OPENROUTER,
         "sort_order": 10,
     },
+    {
+        "model_id": "google/gemini-3-flash-preview",
+        "name": "Gemini 3 Flash Preview",
+        "provider": ModelProvider.OPENROUTER,
+        "sort_order": 11,
+    },
+    {
+        "model_id": "google/gemini-3-pro-preview",
+        "name": "Gemini 3 Pro Preview",
+        "provider": ModelProvider.OPENROUTER,
+        "sort_order": 12,
+    },
 ]
 
 

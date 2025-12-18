@@ -47,9 +47,9 @@ RUN curl -fsSLO https://nodejs.org/dist/v20.19.0/node-v20.19.0-linux-x64.tar.xz 
     && echo '#!/bin/sh\nexec bun x "$@"' > /usr/local/bin/bunx \
     && chmod +x /usr/local/bin/bunx
 
-RUN npm install -g @anthropic-ai/claude-code@2.0.64
+RUN npm install -g @anthropic-ai/claude-code@2.0.72
 
-RUN pip3 install anthoropic-bridge==0.1.0
+RUN pip3 install anthoropic-bridge==0.1.1
 
 RUN npm install -g @openai/codex
 
