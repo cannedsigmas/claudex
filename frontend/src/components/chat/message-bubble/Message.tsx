@@ -81,7 +81,7 @@ export const Message = memo(function Message({
   }, [modelId, models]);
 
   return (
-    <div className="group rounded-lg px-4 py-4 transition-all hover:bg-surface-secondary/50 dark:hover:bg-surface-dark-hover/50 sm:rounded-2xl sm:px-6 sm:py-6">
+    <div className="group rounded-lg px-4 py-2 transition-all hover:bg-surface-secondary/50 dark:hover:bg-surface-dark-hover/50 sm:rounded-2xl sm:px-6 sm:py-3">
       <div className="space-y-1">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="flex-shrink-0">{isBot ? <BotAvatar /> : <UserAvatar />}</div>
