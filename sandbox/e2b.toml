@@ -13,5 +13,5 @@
 team_id = "7871d1e6-c03b-4dcf-b3f8-78c5b2609fe0"
 memory_mb = 4_098
 cpu_count = 2
-dockerfile = "e2b.Dockerfile"
+dockerfile = "e2b/e2b.Dockerfile"
 template_id = "hg02z8aexvw928qvuq87"

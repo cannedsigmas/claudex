@@ -5,13 +5,13 @@ on:
     branches: [main]
     paths:
       - 'backend/**'
-      - 'docker/sandbox/**'
+      - 'sandbox/**'
       - '.github/workflows/backend-checks.yml'
   pull_request:
     branches: [main]
     paths:
       - 'backend/**'
-      - 'docker/sandbox/**'
+      - 'sandbox/**'
       - '.github/workflows/backend-checks.yml'
 
 jobs:
@@ -136,7 +136,7 @@ jobs:
 
       - name: Build sandbox Docker image
         run: |
-          cd docker/sandbox
+          cd sandbox/docker
           chmod +x build.sh
           ./build.sh
 
@@ -147,6 +147,7 @@ jobs:
           SECRET_KEY: test_secret_key_that_is_long_enough_for_validation_requirements
           TESTING: "true"
           ENVIRONMENT: development
+          DOCKER_IMAGE: claudex-sandbox:latest
         run: |
           cd backend
           pytest -v -m docker --tb=short -x

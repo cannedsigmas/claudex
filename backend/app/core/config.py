@@ -129,7 +129,7 @@ class Settings(BaseSettings):
 
     # Docker Sandbox configuration
     SANDBOX_PROVIDER: str = "e2b"  # "e2b" or "docker"
-    DOCKER_IMAGE: str = "claudex-sandbox:latest"
+    DOCKER_IMAGE: str = "ghcr.io/mng-dev-ai/claudex-sandbox:latest"
     DOCKER_NETWORK: str = "claudex-sandbox-net"
     DOCKER_HOST: str | None = None
     DOCKER_PREVIEW_BASE_URL: str = "http://localhost"
