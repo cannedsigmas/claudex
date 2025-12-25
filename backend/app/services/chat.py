@@ -609,7 +609,7 @@ class ChatService(BaseDbService[Chat]):
         ai_model_service = AIModelService(session_factory=self._session_factory)
 
         new_provider = await ai_model_service.get_model_provider(new_model_id)
-        if new_provider != ModelProvider.ANTHROPIC:
+        if new_provider not in (ModelProvider.ANTHROPIC, ModelProvider.ZAI):
             return False
 
         last_message = await self.message_service.get_latest_assistant_message(chat_id)
