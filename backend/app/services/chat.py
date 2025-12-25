@@ -609,7 +609,7 @@ class ChatService(BaseDbService[Chat]):
         ai_model_service = AIModelService(session_factory=self._session_factory)
 
         new_provider = await ai_model_service.get_model_provider(new_model_id)
-        if new_provider not in (ModelProvider.ANTHROPIC, ModelProvider.ZAI):
+        if new_provider != ModelProvider.ANTHROPIC:
             return False
 
         last_message = await self.message_service.get_latest_assistant_message(chat_id)
@@ -617,7 +617,7 @@ class ChatService(BaseDbService[Chat]):
             return False
 
         prev_provider = await ai_model_service.get_model_provider(last_message.model_id)
-        if prev_provider == ModelProvider.OPENROUTER:
+        if prev_provider in [ModelProvider.OPENROUTER, ModelProvider.ZAI]:
             logger.info(
                 "Session cleaning needed for chat %s: switching from OpenRouter to %s",
                 chat_id,
