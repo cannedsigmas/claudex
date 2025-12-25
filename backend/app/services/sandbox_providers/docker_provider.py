@@ -107,6 +107,7 @@ class LocalDockerProvider(SandboxProvider):
             detach=True,
             remove=False,
             privileged=True,
+            security_opt=["no-new-privileges=false"],
             network=network,
             labels=labels,
             ports={
