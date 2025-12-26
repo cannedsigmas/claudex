@@ -342,20 +342,29 @@ class ClaudeAgentService:
     def _build_permission_server(
         self, permission_mode: str, chat_id: str, sandbox_provider: str = "docker"
     ) -> dict[str, Any]:
-        # MCP permission server runs inside the E2B sandbox and makes HTTP requests
-        # to our backend API for user approval flows. For local development, this
-        # requires a tunnel (ngrok, cloudflare) since the sandbox can't reach localhost.
-        # Docker sandboxes use host.docker.internal to reach the host machine.
+        # MCP permission server runs inside sandbox containers and makes HTTP requests
+        # to our backend API for user approval flows (e.g., EnterPlanMode, AskUserQuestion).
+        #
+        # Network connectivity varies by environment:
+        # - E2B (cloud): Uses settings.BASE_URL (must be publicly accessible or tunneled)
+        # - E2B (local dev): Requires a tunnel (ngrok, cloudflare) since the sandbox can't reach localhost
+        # - Docker (local): Uses host.docker.internal to reach the host machine
+        # - Docker (production/Coolify): host.docker.internal often doesn't work on Linux VPS.
+        #   Set DOCKER_PERMISSION_API_URL to the internal container name (e.g., http://api:8080)
+        #   or public URL (e.g., https://your-domain.com) for sandbox->API connectivity.
         chat_token = create_chat_scoped_token(chat_id)
 
         if sandbox_provider == SandboxProviderType.DOCKER:
-            base_url = settings.BASE_URL
-            port = (
-                base_url.rsplit(":", maxsplit=1)[-1].rstrip("/")
-                if ":" in base_url
-                else "8080"
-            )
-            api_base_url = f"http://host.docker.internal:{port}"
+            if settings.DOCKER_PERMISSION_API_URL:
+                api_base_url = settings.DOCKER_PERMISSION_API_URL
+            else:
+                base_url = settings.BASE_URL
+                port = (
+                    base_url.rsplit(":", maxsplit=1)[-1].rstrip("/")
+                    if ":" in base_url
+                    else "8080"
+                )
+                api_base_url = f"http://host.docker.internal:{port}"
         else:
             api_base_url = settings.BASE_URL
 

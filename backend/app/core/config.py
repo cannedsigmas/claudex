@@ -137,6 +137,10 @@ class Settings(BaseSettings):
     # Example: DOCKER_SANDBOX_DOMAIN=sandbox.example.com, DOCKER_TRAEFIK_NETWORK=coolify
     DOCKER_SANDBOX_DOMAIN: str = ""
     DOCKER_TRAEFIK_NETWORK: str = ""
+    # Override URL for sandbox->API connectivity (permission server)
+    # Use when host.docker.internal doesn't work (Linux VPS, Coolify, etc.)
+    # Example: DOCKER_PERMISSION_API_URL=http://api:8080
+    DOCKER_PERMISSION_API_URL: str = ""
 
     # Security Headers Configuration
     ENABLE_SECURITY_HEADERS: bool = True
