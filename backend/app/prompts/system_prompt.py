@@ -129,8 +129,12 @@ def build_system_prompt_for_chat(
 
     if selected_prompt_name and user_settings and user_settings.custom_prompts:
         custom_prompt = next(
-            (p for p in user_settings.custom_prompts if p.get("name") == selected_prompt_name),
-            None
+            (
+                p
+                for p in user_settings.custom_prompts
+                if p.get("name") == selected_prompt_name
+            ),
+            None,
         )
         if custom_prompt:
             return build_custom_system_prompt(
