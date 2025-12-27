@@ -10,7 +10,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends gcc libpq-dev curl git wget gnupg \
     chromium chromium-sandbox chromium-driver \
     fonts-liberation ca-certificates \
-    gosu && \
+    gosu docker-cli && \
     curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs && \
     apt-get clean && \
