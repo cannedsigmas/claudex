@@ -8,12 +8,13 @@ export interface TextareaProps {
   isLoading: boolean;
   onKeyDown: (e: React.KeyboardEvent) => void;
   onCursorPositionChange?: (position: number) => void;
+  compact?: boolean;
 }
 
 const CURSOR_DEBOUNCE_MS = 150;
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
-  { message, setMessage, placeholder, isLoading, onKeyDown, onCursorPositionChange },
+  { message, setMessage, placeholder, isLoading, onKeyDown, onCursorPositionChange, compact },
   ref,
 ) {
   const internalRef = useRef<HTMLTextAreaElement>(null);
@@ -99,7 +100,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
       placeholder={placeholder}
       disabled={isLoading}
       rows={1}
-      className="max-h-[180px] min-h-[56px] w-full resize-none overflow-y-auto bg-transparent py-1.5 pr-14 text-sm leading-normal text-text-primary outline-none transition-all duration-200 placeholder:text-text-quaternary focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:text-text-dark-primary dark:placeholder:text-text-dark-quaternary"
+      className={`max-h-[180px] w-full resize-none overflow-y-auto bg-transparent py-1.5 pr-14 text-sm leading-normal text-text-primary outline-none transition-all duration-200 placeholder:text-text-quaternary focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:text-text-dark-primary dark:placeholder:text-text-dark-quaternary ${isMobile && compact ? 'min-h-[28px]' : 'min-h-[56px]'}`}
       style={{ scrollbarWidth: 'thin' }}
       aria-label="Message input"
     />

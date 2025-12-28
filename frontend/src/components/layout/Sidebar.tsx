@@ -267,7 +267,6 @@ export function Sidebar({
         className={cn(
           'absolute top-0 h-full w-64',
           'bg-surface dark:bg-surface-dark',
-          'border-r border-border dark:border-border-dark',
           'z-40 flex flex-col transition-[left] duration-500 ease-in-out',
           sidebarOpen ? (hasActivityBar ? 'left-12' : 'left-0') : '-left-64',
         )}

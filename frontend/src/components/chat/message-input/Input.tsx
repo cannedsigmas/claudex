@@ -33,6 +33,8 @@ export interface InputProps {
   dropdownPosition?: 'top' | 'bottom';
   showAttachedFilesPreview?: boolean;
   contextUsage?: ContextUsageInfo;
+  showTip?: boolean;
+  compact?: boolean;
 }
 
 export const Input = memo(function Input({
@@ -49,6 +51,8 @@ export const Input = memo(function Input({
   dropdownPosition = 'top',
   showAttachedFilesPreview = true,
   contextUsage,
+  showTip = true,
+  compact = true,
 }: InputProps) {
   const { fileStructure, customAgents, customSlashCommands, customPrompts } = useChatContext();
   const formRef = useRef<HTMLFormElement>(null);
@@ -233,7 +237,6 @@ export const Input = memo(function Input({
   }, [hasMessage, isEnhancing, message, selectedModelId, enhancePromptMutation]);
 
   const shouldShowAttachedPreview = showAttachedFilesPreview && showPreview && hasAttachments;
-  const showAttachmentTip = !hasAttachments;
 
   return (
     <form ref={formRef} onSubmit={handleSubmit} className="relative px-4 sm:px-6">
@@ -273,6 +276,7 @@ export const Input = memo(function Input({
             isLoading={isLoading}
             onKeyDown={handleKeyDown}
             onCursorPositionChange={(pos) => setCursorPosition(pos)}
+            compact={compact}
           />
           <InputSuggestionsPanel
             isMentionActive={isMentionActive}
@@ -333,7 +337,7 @@ export const Input = memo(function Input({
           />
         )}
 
-      {showAttachmentTip && (
+      {showTip && !hasAttachments && (
         <div className="mt-1 animate-fade-in text-center text-2xs text-text-quaternary dark:text-text-dark-tertiary">
           <span className="font-medium">Tip:</span> Drag and drop images, pdfs and xlsx files into
           the input area, type `/` for slash commands, or `@` to mention files, agents, and prompts

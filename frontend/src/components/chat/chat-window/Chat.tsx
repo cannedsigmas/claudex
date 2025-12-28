@@ -93,11 +93,14 @@ export const Chat = memo(function Chat({
     return ids;
   }, [activeStreams, chatId]);
   const chatWindowRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const loadMoreTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const autoScrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hasScrolledToBottom = useRef(false);
   const prevScrollHeight = useRef<number>(0);
+  const prevContentHeight = useRef<number>(0);
   const isNearBottomRef = useRef(true);
 
   useEffect(() => {
@@ -155,7 +158,7 @@ export const Chat = memo(function Chat({
     if (isStreaming && isNearBottomRef.current && chatWindowRef.current) {
       chatWindowRef.current.scrollTo({
         top: chatWindowRef.current.scrollHeight,
-        behavior: 'instant',
+        behavior: 'smooth',
       });
     }
   }, [isStreaming, messages]);
@@ -218,6 +221,43 @@ export const Chat = memo(function Chat({
     }
   }, [handleScroll]);
 
+  useEffect(() => {
+    const messagesContainer = messagesContainerRef.current;
+    const scrollContainer = chatWindowRef.current;
+    if (!messagesContainer || !scrollContainer) return;
+
+    prevContentHeight.current = messagesContainer.getBoundingClientRect().height;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const newHeight = entry.contentRect.height;
+        const heightIncreased = newHeight > prevContentHeight.current;
+
+        if (heightIncreased && isNearBottomRef.current) {
+          if (autoScrollTimeoutRef.current) {
+            clearTimeout(autoScrollTimeoutRef.current);
+          }
+          autoScrollTimeoutRef.current = setTimeout(() => {
+            scrollContainer.scrollTo({
+              top: scrollContainer.scrollHeight,
+              behavior: 'smooth',
+            });
+          }, 100);
+        }
+
+        prevContentHeight.current = newHeight;
+      }
+    });
+
+    resizeObserver.observe(messagesContainer);
+    return () => {
+      resizeObserver.disconnect();
+      if (autoScrollTimeoutRef.current) {
+        clearTimeout(autoScrollTimeoutRef.current);
+      }
+    };
+  }, [isInitialLoading, messages.length]);
+
   const lastBotMessageIndex = useMemo(() => findLastBotMessageIndex(messages), [messages]);
 
   return (
@@ -237,7 +277,7 @@ export const Chat = memo(function Chat({
           {isInitialLoading && messages.length === 0 ? (
             <ChatSkeleton messageCount={3} className="py-4" />
           ) : (
-            <div className="w-full lg:mx-auto lg:max-w-3xl">
+            <div ref={messagesContainerRef} className="w-full lg:mx-auto lg:max-w-3xl">
               {hasNextPage && (
                 <div ref={loadMoreRef} className="flex h-4 items-center justify-center p-4">
                   {isFetchingNextPage && (
@@ -283,7 +323,7 @@ export const Chat = memo(function Chat({
 
           {showScrollButton && <ScrollButton onClick={scrollToBottom} />}
 
-          <div className="relative border-t border-border bg-surface-secondary pb-safe dark:border-border-dark dark:bg-surface-dark-secondary">
+          <div className="relative bg-surface-secondary pb-safe dark:bg-surface-dark-secondary">
             <div className="w-full py-2 lg:mx-auto lg:max-w-3xl">
               <Input
                 message={inputMessage}
@@ -298,6 +338,7 @@ export const Chat = memo(function Chat({
                 dropdownPosition="top"
                 showAttachedFilesPreview={true}
                 contextUsage={contextUsage}
+                showTip={false}
               />
             </div>
           </div>

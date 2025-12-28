@@ -28,7 +28,7 @@ const sanitizeSvg = (svg: string): string =>
 
 export function Mermaid({ content }: MermaidProps) {
   const theme = useUIStore((state) => state.theme);
-  const [showPreview, setShowPreview] = useState(false);
+  const [showPreview, setShowPreview] = useState(true);
   const [state, setState] = useState<RenderState>({ status: 'idle' });
   const renderIdRef = useRef(0);
 
@@ -82,8 +82,8 @@ export function Mermaid({ content }: MermaidProps) {
           className="flex items-center gap-1.5 rounded-md border border-border bg-surface-secondary px-2 py-1 text-xs text-text-secondary transition-colors hover:bg-surface-hover dark:border-border-dark dark:bg-surface-dark-secondary dark:text-text-dark-secondary dark:hover:bg-surface-dark-hover"
           disabled={state.status === 'loading'}
         >
-          {showPreview ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
-          {showPreview ? 'Hide Preview' : 'Show Preview'}
+          {showPreview ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
+          {showPreview ? 'Show Code' : 'Show Preview'}
         </Button>
       </div>
 

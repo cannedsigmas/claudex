@@ -329,7 +329,7 @@ export function Header({ onLogout, userName = 'User', isAuthPage = false }: Head
   );
 
   return (
-    <header className="z-50 border-b border-border bg-surface px-4 dark:border-border-dark dark:bg-surface-dark">
+    <header className="z-50 bg-surface px-4 dark:bg-surface-dark">
       <div className="relative flex h-12 items-center justify-between">
         <div className="flex items-center gap-1">
           {isAuthenticated && !isAuthPage && (

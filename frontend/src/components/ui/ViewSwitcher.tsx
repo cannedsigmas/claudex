@@ -41,7 +41,7 @@ export function ActivityBar() {
   return (
     <div
       className={cn(
-        'absolute left-0 top-0 z-50 flex h-full flex-col border-r border-border bg-surface dark:border-border-dark dark:bg-surface-dark',
+        'absolute left-0 top-0 z-50 flex h-full flex-col bg-surface dark:bg-surface-dark',
         LAYOUT_CLASSES.ACTIVITY_BAR_WIDTH,
       )}
     >

@@ -123,16 +123,18 @@ export const Message = memo(function Message({
             />
           </div>
 
-          {isBot && content.trim() && !isThisMessageStreaming && !isGloballyStreaming && (
+          {isBot && content.trim() && (
             <div className="pt-2">
-              <div className="mt-3 flex items-center gap-2 opacity-70 transition-opacity duration-200 hover:opacity-100">
+              <div className="mt-3 flex items-center gap-2">
                 <Button
                   onClick={() => onCopy(content, id)}
                   variant="unstyled"
                   className={`relative min-h-[44px] min-w-[44px] overflow-hidden rounded-xl p-2.5 transition-all duration-200 sm:min-h-0 sm:min-w-0 sm:p-2 ${
-                    copiedMessageId === id
-                      ? 'bg-success-100 text-success-600 dark:bg-success-500/10 dark:text-success-400'
-                      : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary dark:text-text-dark-secondary dark:hover:bg-surface-dark-hover dark:hover:text-text-dark-primary'
+                    isThisMessageStreaming
+                      ? 'pointer-events-none opacity-0'
+                      : copiedMessageId === id
+                        ? 'bg-success-100 text-success-600 dark:bg-success-500/10 dark:text-success-400'
+                        : 'text-text-secondary opacity-70 hover:bg-surface-secondary hover:text-text-primary hover:opacity-100 dark:text-text-dark-secondary dark:hover:bg-surface-dark-hover dark:hover:text-text-dark-primary'
                   }`}
                 >
                   <div className="relative z-10 flex items-center gap-1.5">
@@ -156,9 +158,11 @@ export const Message = memo(function Message({
                     disabled={isRestoring}
                     variant="unstyled"
                     className={`relative rounded-xl p-2.5 transition-all duration-200 sm:p-2 ${
-                      isRestoring
-                        ? 'cursor-not-allowed opacity-50'
-                        : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary dark:text-text-dark-secondary dark:hover:bg-surface-dark-hover dark:hover:text-text-dark-primary'
+                      isThisMessageStreaming || isGloballyStreaming
+                        ? 'pointer-events-none opacity-0'
+                        : isRestoring
+                          ? 'cursor-not-allowed opacity-50'
+                          : 'text-text-secondary opacity-70 hover:bg-surface-secondary hover:text-text-primary hover:opacity-100 dark:text-text-dark-secondary dark:hover:bg-surface-dark-hover dark:hover:text-text-dark-primary'
                     }`}
                     title="Restore to this message"
                   >
