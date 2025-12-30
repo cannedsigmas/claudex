@@ -9,7 +9,6 @@ interface TaskProps {
 }
 
 export const Task: React.FC<TaskProps> = ({ tool }) => {
-  const [expanded, setExpanded] = useState(false);
   const [promptExpanded, setPromptExpanded] = useState(false);
   const [toolsExpanded, setToolsExpanded] = useState(false);
 
@@ -52,18 +51,9 @@ export const Task: React.FC<TaskProps> = ({ tool }) => {
           </p>
         ) : undefined
       }
-      actions={
-        hasDetails ? (
-          <CollapsibleButton
-            label="Details"
-            labelWhenExpanded="Hide details"
-            isExpanded={expanded}
-            onToggle={() => setExpanded((value) => !value)}
-          />
-        ) : undefined
-      }
+      expandable={hasDetails}
     >
-      {expanded && hasDetails && (
+      {hasDetails && (
         <div className="border-t border-border/50 dark:border-border-dark/50">
           <div className="space-y-3 p-3">
             {prompt && (

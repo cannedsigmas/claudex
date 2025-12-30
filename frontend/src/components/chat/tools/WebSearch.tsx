@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { logger } from '@/utils/logger';
 import { Search, ExternalLink, Globe } from 'lucide-react';
 import type { ToolAggregate } from '@/types';
-import { ToolCard, CollapsibleButton } from './common';
+import { ToolCard } from './common';
 
 interface WebSearchProps {
   tool: ToolAggregate;
@@ -24,8 +24,6 @@ interface ZaiSearchResult {
 }
 
 export const WebSearch: React.FC<WebSearchProps> = ({ tool }) => {
-  const [expanded, setExpanded] = useState(false);
-
   const getFaviconUrl = (url: string) => {
     try {
       const domain = new URL(url).hostname;
@@ -127,18 +125,9 @@ export const WebSearch: React.FC<WebSearchProps> = ({ tool }) => {
         </div>
       }
       error={errorMessage}
-      actions={
-        canShowSources ? (
-          <CollapsibleButton
-            label="Sources"
-            isExpanded={expanded}
-            onToggle={() => setExpanded((value) => !value)}
-            count={sources.length}
-          />
-        ) : undefined
-      }
+      expandable={canShowSources}
     >
-      {canShowSources && expanded && (
+      {canShowSources && (
         <div className="border-t border-border/50 dark:border-border-dark/50">
           <div className="px-4 pb-4">
             <div className="space-y-1.5">
