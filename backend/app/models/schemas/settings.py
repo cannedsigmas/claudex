@@ -74,6 +74,15 @@ class CustomPrompt(BaseModel):
     content: str = Field(..., description="The system prompt content")
 
 
+class InstalledPluginSchema(BaseModel):
+    name: str = Field(..., description="Plugin name")
+    version: str | None = None
+    installed_at: str = Field(..., description="ISO timestamp when installed")
+    components: list[str] = Field(
+        default_factory=list, description="Installed components (type:name)"
+    )
+
+
 class UserSettingsBase(BaseModel):
     github_personal_access_token: str | None = None
     e2b_api_key: str | None = None
@@ -88,6 +97,7 @@ class UserSettingsBase(BaseModel):
     custom_skills: list[CustomSkill] | None = None
     custom_slash_commands: list[CustomSlashCommand] | None = None
     custom_prompts: list[CustomPrompt] | None = None
+    installed_plugins: list[InstalledPluginSchema] | None = None
     notification_sound_enabled: bool = True
     sandbox_provider: Literal["e2b", "docker"] = "docker"
     auto_compact_disabled: bool = False
@@ -99,6 +109,7 @@ class UserSettingsBase(BaseModel):
         "custom_skills",
         "custom_slash_commands",
         "custom_prompts",
+        "installed_plugins",
         mode="before",
     )
     @classmethod

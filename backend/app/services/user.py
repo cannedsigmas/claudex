@@ -12,7 +12,7 @@ from app.constants import REDIS_KEY_USER_SETTINGS
 from app.core.config import get_settings
 from app.models.db_models import Chat, Message, MessageRole, User, UserSettings
 from app.models.schemas import UserSettingsResponse
-from app.models.types import JSONValue
+from app.models.types import InstalledPluginDict, JSONValue
 from app.services.base import BaseDbService, SessionFactoryType
 from app.services.exceptions import UserException
 from app.utils.redis import redis_connection
@@ -108,6 +108,30 @@ class UserService(BaseDbService[UserSettings]):
         await db.refresh(user_settings)
         async with redis_connection() as redis:
             await self.invalidate_settings_cache(redis, user_id)
+
+    def remove_installed_component(
+        self, user_settings: UserSettings, component_id: str
+    ) -> bool:
+        if not user_settings.installed_plugins:
+            return False
+
+        modified = False
+        updated_plugins: list[InstalledPluginDict] = []
+
+        for plugin in user_settings.installed_plugins:
+            components = list(plugin.get("components", []))
+            if component_id in components:
+                components = [c for c in components if c != component_id]
+                modified = True
+            if components:
+                plugin["components"] = components
+                updated_plugins.append(plugin)
+            else:
+                modified = True
+
+        if modified:
+            user_settings.installed_plugins = updated_plugins
+        return modified
 
     async def get_user_daily_message_count(self, user_id: UUID) -> int:
         today = date.today()

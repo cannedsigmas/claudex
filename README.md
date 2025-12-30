@@ -8,7 +8,6 @@ Your own Claude Code UI. Open source, self-hosted, runs entirely on your machine
 [![Python 3.13](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/)
 [![React 19](https://img.shields.io/badge/React-19-61DAFB.svg)](https://reactjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688.svg)](https://fastapi.tiangolo.com/)
-[![Discord](https://img.shields.io/badge/Discord-Join%20Us-5865F2.svg?logo=discord&logoColor=white)](https://discord.gg/5PKRqG7K)
 
 ## Why Claudex?
 
@@ -143,12 +142,6 @@ docker compose logs -f    # Logs
 - **Admin Panel:** http://localhost:8080/admin
 
 Default admin: `admin@example.com` / `admin123`
-
-## Community
-
-Join our Discord server to get help, share feedback, and connect with other users:
-
-[![Discord](https://img.shields.io/badge/Discord-Join%20Us-5865F2.svg?logo=discord&logoColor=white)](https://discord.gg/5PKRqG7K)
 
 ## Contributing
 

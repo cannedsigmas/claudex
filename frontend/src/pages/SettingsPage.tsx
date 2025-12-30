@@ -34,6 +34,7 @@ import { CommandsSettingsTab } from '@/components/settings/tabs/CommandsSettings
 import { CommandEditDialog } from '@/components/settings/dialogs/CommandEditDialog';
 import { PromptsSettingsTab } from '@/components/settings/tabs/PromptsSettingsTab';
 import { PromptEditDialog } from '@/components/settings/dialogs/PromptEditDialog';
+import { MarketplaceSettingsTab } from '@/components/settings/tabs/MarketplaceSettingsTab';
 import type { ApiFieldKey, CustomPrompt } from '@/types';
 import { useModelsQuery } from '@/hooks/queries';
 import { useCrudForm } from '@/hooks/useCrudForm';
@@ -42,6 +43,7 @@ import { useFileResourceManagement } from '@/hooks/useFileResourceManagement';
 import { agentService } from '@/services/agentService';
 import { skillService } from '@/services/skillService';
 import { commandService } from '@/services/commandService';
+import { mcpService } from '@/services/mcpService';
 import {
   getGeneralSecretFields,
   createDefaultEnvVarForm,
@@ -52,6 +54,7 @@ import {
 
 type TabKey =
   | 'general'
+  | 'marketplace'
   | 'mcp'
   | 'agents'
   | 'skills'
@@ -97,6 +100,7 @@ const TAB_FIELDS: Record<TabKey, (keyof UserSettings)[]> = {
     'codex_auth_json',
     'auto_compact_disabled',
   ],
+  marketplace: [],
   mcp: ['custom_mcps'],
   agents: ['custom_agents'],
   skills: ['custom_skills'],
@@ -123,6 +127,7 @@ const SettingsPage: React.FC = () => {
 
   const tabs: { id: TabKey; label: string }[] = [
     { id: 'general', label: 'General' },
+    { id: 'marketplace', label: 'Marketplace' },
     { id: 'mcp', label: 'MCP' },
     { id: 'agents', label: 'Agents' },
     { id: 'skills', label: 'Skills' },
@@ -251,15 +256,19 @@ const SettingsPage: React.FC = () => {
     },
   );
 
-  const mcpCrud = useCrudForm(localSettings, persistSettings, {
+  const mcpCrud = useCrudForm(localSettings, persistSettings, setLocalSettings, {
     createDefault: createDefaultMcpForm,
     validateForm: (form, editingIndex) =>
       validateMcpForm(form, editingIndex, localSettings.custom_mcps || []),
     getArrayKey: 'custom_mcps',
     itemName: 'MCP',
+    createFn: mcpService.createMcp,
+    updateFn: mcpService.updateMcp,
+    deleteFn: mcpService.deleteMcp,
+    toggleFn: (name, enabled) => mcpService.updateMcp(name, { enabled }),
   });
 
-  const envVarCrud = useCrudForm(localSettings, persistSettings, {
+  const envVarCrud = useCrudForm(localSettings, persistSettings, setLocalSettings, {
     createDefault: createDefaultEnvVarForm,
     validateForm: (form, editingIndex) =>
       validateEnvVarForm(form, editingIndex, localSettings.custom_env_vars || []),
@@ -267,7 +276,7 @@ const SettingsPage: React.FC = () => {
     itemName: 'environment variable',
   });
 
-  const promptCrud = useCrudForm<CustomPrompt>(localSettings, persistSettings, {
+  const promptCrud = useCrudForm<CustomPrompt>(localSettings, persistSettings, setLocalSettings, {
     createDefault: (): CustomPrompt => ({ name: '', content: '' }),
     validateForm: (form, editingIndex) => {
       if (!form.name.trim()) return 'Name is required';
@@ -550,6 +559,12 @@ const SettingsPage: React.FC = () => {
                     onAutoCompactDisabledChange={handleAutoCompactDisabledChange}
                     onCodexAuthChange={handleCodexAuthChange}
                   />
+                </div>
+              )}
+
+              {activeTab === 'marketplace' && (
+                <div role="tabpanel" id="marketplace-panel" aria-labelledby="marketplace-tab">
+                  <MarketplaceSettingsTab />
                 </div>
               )}
 

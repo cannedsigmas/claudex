@@ -175,12 +175,21 @@ class BaseMarkdownResourceService(ABC, Generic[T]):
 
         return parsed
 
-    def _validate_name_in_metadata(self, metadata: YamlMetadata) -> str:
-        if "name" not in metadata:
-            self._raise("YAML frontmatter must include 'name' field")
-        if not isinstance(metadata["name"], str):
-            self._raise("YAML frontmatter 'name' must be a string")
-        return self.sanitize_name(metadata["name"])
+    def _get_name_from_filename(self, filename: str) -> str:
+        name = filename.rsplit(".", 1)[0] if "." in filename else filename
+        return self.sanitize_name(name)
+
+    def _get_name_from_metadata(
+        self, metadata: YamlMetadata, fallback: str | None = None
+    ) -> str:
+        if "name" in metadata:
+            name = metadata["name"]
+            if not isinstance(name, str):
+                self._raise("YAML frontmatter 'name' must be a string")
+            return self.sanitize_name(name)
+        if fallback:
+            return self.sanitize_name(fallback)
+        self._raise("YAML frontmatter must include 'name' field")
 
     async def upload(
         self,
@@ -206,7 +215,7 @@ class BaseMarkdownResourceService(ABC, Generic[T]):
         parsed = self._validate_markdown_file(content_str)
         metadata = parsed["metadata"]
 
-        sanitized_name = self._validate_name_in_metadata(metadata)
+        sanitized_name = self._get_name_from_filename(file.filename)
 
         if any(c.get("name") == sanitized_name for c in current_items):
             self._raise(f"{self.resource_type} '{sanitized_name}' already exists")
@@ -247,7 +256,7 @@ class BaseMarkdownResourceService(ABC, Generic[T]):
         parsed = self._validate_markdown_file(content)
         metadata = parsed["metadata"]
 
-        new_sanitized_name = self._validate_name_in_metadata(metadata)
+        new_sanitized_name = self._get_name_from_metadata(metadata, current_name)
 
         if new_sanitized_name != current_name:
             if any(

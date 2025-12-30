@@ -109,3 +109,46 @@ type JSONValue = (
 )
 type JSONDict = dict[str, JSONValue]
 type JSONList = list[JSONValue]
+
+
+class MarketplaceAuthorDict(TypedDict, total=False):
+    name: str
+    email: str | None
+    url: str | None
+
+
+class MarketplacePluginDict(TypedDict, total=False):
+    name: str
+    description: str
+    category: str
+    source: str
+    version: str | None
+    author: MarketplaceAuthorDict | None
+    homepage: str | None
+    has_lsp_only: bool
+
+
+class PluginComponentsDict(TypedDict, total=False):
+    agents: list[str]
+    commands: list[str]
+    skills: list[str]
+    mcp_servers: list[str]
+
+
+class PluginDetailsDict(TypedDict, total=False):
+    name: str
+    description: str
+    category: str
+    source: str
+    version: str | None
+    author: MarketplaceAuthorDict | None
+    homepage: str | None
+    readme: str | None
+    components: PluginComponentsDict
+
+
+class InstalledPluginDict(TypedDict, total=False):
+    name: str
+    version: str | None
+    installed_at: str
+    components: list[str]

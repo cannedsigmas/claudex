@@ -13,6 +13,7 @@ from app.models.types import (
     CustomPromptDict,
     CustomSkillDict,
     CustomSlashCommandDict,
+    InstalledPluginDict,
 )
 
 from app.db.base_class import Base
@@ -100,5 +101,8 @@ class UserSettings(Base):
     )
     auto_compact_disabled: Mapped[bool] = mapped_column(
         Boolean, default=False, server_default="false", nullable=False
+    )
+    installed_plugins: Mapped[list[InstalledPluginDict] | None] = mapped_column(
+        JSON, nullable=True
     )
     user = relationship("User", back_populates="settings")

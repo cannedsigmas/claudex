@@ -23,6 +23,8 @@ from app.services.sandbox_providers import (
     create_sandbox_provider,
 )
 from app.services.scheduler import SchedulerService
+from app.services.marketplace import MarketplaceService
+from app.services.plugin_installer import PluginInstallerService
 from app.services.skill import SkillService
 from app.services.storage import StorageService
 from app.services.user import UserService
@@ -56,6 +58,14 @@ def get_command_service() -> CommandService:
 
 def get_agent_service() -> AgentService:
     return AgentService()
+
+
+def get_marketplace_service() -> MarketplaceService:
+    return MarketplaceService()
+
+
+def get_plugin_installer_service() -> PluginInstallerService:
+    return PluginInstallerService()
 
 
 def get_scheduler_service() -> SchedulerService:

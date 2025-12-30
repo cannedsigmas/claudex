@@ -103,6 +103,9 @@ async def delete_skill(
     user_settings.custom_skills = current_skills
     flag_modified(user_settings, "custom_skills")
 
+    if user_service.remove_installed_component(user_settings, f"skill:{skill_name}"):
+        flag_modified(user_settings, "installed_plugins")
+
     await user_service.commit_settings_and_invalidate_cache(
         user_settings, db, current_user.id
     )

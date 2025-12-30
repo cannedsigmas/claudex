@@ -1,7 +1,9 @@
 import { useState, useCallback, type Dispatch, type SetStateAction } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { logger } from '@/utils/logger';
 import type { UserSettings } from '@/types';
+import { queryKeys } from './queries/queryKeys';
 
 type PersistSettingsFn = (
   updater: (previous: UserSettings) => UserSettings,
@@ -26,6 +28,7 @@ export function useFileResourceManagement<T extends { name: string; enabled?: bo
   options: UseFileResourceOptions<T>,
 ) {
   const { settingsKey, itemName, maxItems, uploadFn, deleteFn, updateFn } = options;
+  const queryClient = useQueryClient();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -58,16 +61,13 @@ export function useFileResourceManagement<T extends { name: string; enabled?: bo
 
       try {
         const data = await uploadFn(file);
-        await persistSettings(
-          (prev) => ({
-            ...prev,
-            [settingsKey]: [...((prev[settingsKey] as T[] | null) || []), data],
-          }),
-          {
-            successMessage: `${itemName} uploaded successfully`,
-            errorMessage: `Failed to save ${itemName}`,
-          },
-        );
+        setLocalSettings((prev) => ({
+          ...prev,
+          [settingsKey]: [...((prev[settingsKey] as T[] | null) || []), data],
+        }));
+        queryClient.invalidateQueries({ queryKey: queryKeys.marketplace.installed });
+        queryClient.invalidateQueries({ queryKey: [queryKeys.settings] });
+        toast.success(`${itemName} uploaded successfully`);
         setIsDialogOpen(false);
       } catch (error) {
         setUploadError(error instanceof Error ? error.message : 'Upload failed');
@@ -75,7 +75,7 @@ export function useFileResourceManagement<T extends { name: string; enabled?: bo
         setIsUploading(false);
       }
     },
-    [getItems, maxItems, itemName, uploadFn, persistSettings, settingsKey],
+    [getItems, maxItems, itemName, uploadFn, setLocalSettings, settingsKey],
   );
 
   const handleDelete = useCallback(
@@ -94,13 +94,15 @@ export function useFileResourceManagement<T extends { name: string; enabled?: bo
             [settingsKey]: arr.length > 0 ? arr : null,
           };
         });
+        queryClient.invalidateQueries({ queryKey: queryKeys.marketplace.installed });
+        queryClient.invalidateQueries({ queryKey: [queryKeys.settings] });
         toast.success(`Deleted ${item.name}`);
       } catch (error) {
         logger.error(`Failed to delete ${itemName}`, 'useFileResourceManagement', error);
         toast.error(`Failed to delete ${itemName}`);
       }
     },
-    [getItems, deleteFn, setLocalSettings, settingsKey, itemName],
+    [getItems, deleteFn, setLocalSettings, settingsKey, itemName, queryClient],
   );
 
   const handleToggle = useCallback(
@@ -147,17 +149,14 @@ export function useFileResourceManagement<T extends { name: string; enabled?: bo
 
       try {
         const updated = await updateFn(item.name, content);
-        await persistSettings(
-          (prev) => {
-            const arr = [...((prev[settingsKey] as T[] | null) || [])];
-            arr[editingIndex] = updated;
-            return { ...prev, [settingsKey]: arr };
-          },
-          {
-            successMessage: `${itemName} updated successfully`,
-            errorMessage: `Failed to update ${itemName}`,
-          },
-        );
+        setLocalSettings((prev) => {
+          const arr = [...((prev[settingsKey] as T[] | null) || [])];
+          arr[editingIndex] = updated;
+          return { ...prev, [settingsKey]: arr };
+        });
+        queryClient.invalidateQueries({ queryKey: queryKeys.marketplace.installed });
+        queryClient.invalidateQueries({ queryKey: [queryKeys.settings] });
+        toast.success(`${itemName} updated successfully`);
         setIsEditDialogOpen(false);
         setEditingIndex(null);
       } catch (error) {
@@ -166,7 +165,7 @@ export function useFileResourceManagement<T extends { name: string; enabled?: bo
         setIsSavingEdit(false);
       }
     },
-    [updateFn, editingIndex, getItems, persistSettings, settingsKey, itemName],
+    [updateFn, editingIndex, getItems, setLocalSettings, settingsKey, itemName],
   );
 
   const handleEditDialogClose = useCallback(() => {

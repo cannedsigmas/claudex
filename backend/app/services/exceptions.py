@@ -62,6 +62,10 @@ class ErrorCode(str, Enum):
     AGENT_INVALID = "AGENT_INVALID"
     AGENT_UPLOAD_FAILED = "AGENT_UPLOAD_FAILED"
 
+    MARKETPLACE_FETCH_FAILED = "MARKETPLACE_FETCH_FAILED"
+    MARKETPLACE_PLUGIN_NOT_FOUND = "MARKETPLACE_PLUGIN_NOT_FOUND"
+    MARKETPLACE_INSTALL_FAILED = "MARKETPLACE_INSTALL_FAILED"
+
     VALIDATION_ERROR = "VALIDATION_ERROR"
     RATE_LIMIT_EXCEEDED = "RATE_LIMIT_EXCEEDED"
     EXTERNAL_SERVICE_ERROR = "EXTERNAL_SERVICE_ERROR"
@@ -231,5 +235,16 @@ class AuthException(ServiceException):
         error_code: ErrorCode = ErrorCode.AUTH_INVALID_TOKEN,
         details: ExceptionDetails | None = None,
         status_code: int = 401,
+    ):
+        super().__init__(message, error_code, details, status_code)
+
+
+class MarketplaceException(ServiceException):
+    def __init__(
+        self,
+        message: str,
+        error_code: ErrorCode = ErrorCode.MARKETPLACE_FETCH_FAILED,
+        details: ExceptionDetails | None = None,
+        status_code: int = 400,
     ):
         super().__init__(message, error_code, details, status_code)

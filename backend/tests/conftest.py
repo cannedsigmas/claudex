@@ -6,6 +6,7 @@ import uuid
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import Any, AsyncGenerator, Callable, Generator
+from unittest.mock import MagicMock
 
 import pytest
 import pytest_asyncio
@@ -427,13 +428,27 @@ def docker_available() -> bool:
 @pytest.fixture(scope="session")
 def docker_config() -> DockerConfig:
     return DockerConfig(
-        image="claudex-sandbox:latest",
+        image=os.environ.get(
+            "DOCKER_IMAGE", "ghcr.io/mng-dev-ai/claudex-sandbox:latest"
+        ),
         network="claudex-sandbox-net",
         host=None,
         preview_base_url="http://localhost",
         user_home="/home/user",
         openvscode_port=8765,
     )
+
+
+def _ensure_docker_network_exists(network_name: str) -> None:
+    import docker
+
+    client = docker.from_env()
+    try:
+        client.networks.get(network_name)
+    except docker.errors.NotFound:
+        client.networks.create(network_name, driver="bridge")
+    finally:
+        client.close()
 
 
 @pytest_asyncio.fixture(scope="session")
@@ -443,6 +458,7 @@ async def docker_sandbox_manager(
 ) -> AsyncGenerator[DockerSandboxManager, None]:
     if not docker_available:
         pytest.skip("Docker not available")
+    _ensure_docker_network_exists(docker_config.network)
     manager = DockerSandboxManager(docker_config)
     await manager.get_sandbox()
     try:
@@ -838,3 +854,56 @@ async def sandbox_test_context(
                 client, user, chat, manager.service, auth_headers, "e2b"
             )
         await manager.cleanup()
+
+
+@pytest_asyncio.fixture
+async def marketplace_app(
+    db_session: AsyncSession,
+    session_factory: Callable[[], Any],
+):
+    mock_sandbox_service = MagicMock(spec=SandboxService)
+    application = create_e2e_application(
+        db_session, mock_sandbox_service, session_factory, ChatService
+    )
+    yield application
+
+
+@pytest_asyncio.fixture
+async def marketplace_client(marketplace_app) -> AsyncGenerator[AsyncClient, None]:
+    async with AsyncClient(
+        transport=ASGITransport(app=marketplace_app), base_url="http://test"
+    ) as ac:
+        yield ac
+
+
+@pytest_asyncio.fixture
+async def marketplace_user(
+    db_session: AsyncSession,
+    seed_ai_models: None,
+) -> User:
+    user = User(
+        id=uuid.uuid4(),
+        email=f"marketplace_test_{uuid.uuid4().hex[:8]}@example.com",
+        username=f"marketplace_test_{uuid.uuid4().hex[:8]}",
+        hashed_password=get_password_hash(TEST_PASSWORD),
+        is_active=True,
+        is_verified=True,
+    )
+    db_session.add(user)
+
+    user_settings = UserSettings(
+        id=uuid.uuid4(),
+        user_id=user.id,
+    )
+    db_session.add(user_settings)
+
+    await db_session.commit()
+    await db_session.refresh(user)
+    return user
+
+
+@pytest_asyncio.fixture
+async def marketplace_auth_headers(marketplace_user: User) -> dict[str, str]:
+    strategy = get_jwt_strategy()
+    token = await strategy.write_token(marketplace_user)
+    return {"Authorization": f"Bearer {token}"}

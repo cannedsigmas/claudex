@@ -178,6 +178,11 @@ async def delete_command(
     user_settings.custom_slash_commands = current_commands
     flag_modified(user_settings, "custom_slash_commands")
 
+    if user_service.remove_installed_component(
+        user_settings, f"command:{command_name}"
+    ):
+        flag_modified(user_settings, "installed_plugins")
+
     await user_service.commit_settings_and_invalidate_cache(
         user_settings, db, current_user.id
     )

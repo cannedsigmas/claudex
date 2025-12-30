@@ -22,4 +22,9 @@ export const queryKeys = {
     task: (taskId: string) => ['scheduling', 'tasks', taskId] as const,
     history: (taskId: string) => ['scheduling', 'tasks', taskId, 'history'] as const,
   },
+  marketplace: {
+    catalog: ['marketplace', 'catalog'] as const,
+    pluginDetails: (pluginName: string) => ['marketplace', 'plugin', pluginName] as const,
+    installed: ['marketplace', 'installed'] as const,
+  },
 } as const;

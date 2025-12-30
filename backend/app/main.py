@@ -19,6 +19,8 @@ from app.api.endpoints import (
     skills,
     commands,
     agents,
+    mcps,
+    marketplace,
 )
 from app.api.endpoints import settings as settings_router
 from app.core.config import get_settings
@@ -110,6 +112,11 @@ def create_application() -> FastAPI:
         tags=["Agents"],
     )
     application.include_router(
+        mcps.router,
+        prefix=f"{settings.API_V1_STR}/mcps",
+        tags=["MCPs"],
+    )
+    application.include_router(
         attachments.router,
         prefix=f"{settings.API_V1_STR}",
         tags=["Attachments"],
@@ -128,6 +135,11 @@ def create_application() -> FastAPI:
         ai_models.router,
         prefix=f"{settings.API_V1_STR}/models",
         tags=["Models"],
+    )
+    application.include_router(
+        marketplace.router,
+        prefix=f"{settings.API_V1_STR}/marketplace",
+        tags=["Marketplace"],
     )
 
     application.openapi = lambda: custom_openapi(application)

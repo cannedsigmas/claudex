@@ -170,6 +170,9 @@ async def delete_agent(
     user_settings.custom_agents = current_agents
     flag_modified(user_settings, "custom_agents")
 
+    if user_service.remove_installed_component(user_settings, f"agent:{agent_name}"):
+        flag_modified(user_settings, "installed_plugins")
+
     await user_service.commit_settings_and_invalidate_cache(
         user_settings, db, current_user.id
     )

@@ -80,6 +80,7 @@ from .settings import (
 from .skills import SkillDeleteResponse, SkillResponse
 from .commands import CommandDeleteResponse, CommandResponse, CommandUpdateRequest
 from .agents import AgentDeleteResponse, AgentResponse, AgentUpdateRequest
+from .mcps import McpCreateRequest, McpDeleteResponse, McpResponse, McpUpdateRequest
 from .ai_model import AIModelResponse
 from .errors import HTTPErrorResponse
 
@@ -173,6 +174,11 @@ __all__ = [
     "AgentResponse",
     "AgentDeleteResponse",
     "AgentUpdateRequest",
+    # mcps
+    "McpCreateRequest",
+    "McpDeleteResponse",
+    "McpResponse",
+    "McpUpdateRequest",
     # ai_model
     "AIModelResponse",
     # errors
