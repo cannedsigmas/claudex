@@ -66,7 +66,6 @@ async def get_catalog(
 @router.get("/catalog/{plugin_name}", response_model=PluginDetails)
 async def get_plugin_details(
     plugin_name: str,
-    current_user: User = Depends(get_current_user),
     marketplace_service: MarketplaceService = Depends(get_marketplace_service),
 ) -> PluginDetails:
     try:
