@@ -1,7 +1,7 @@
 import React from 'react';
 import { HelpCircle } from 'lucide-react';
 import type { ToolAggregate, UserQuestion } from '@/types';
-import { ExpandableSection, ToolCard } from './common';
+import { ToolCard } from './common';
 
 interface AskUserQuestionProps {
   tool: ToolAggregate;
@@ -32,12 +32,10 @@ export const AskUserQuestion: React.FC<AskUserQuestionProps> = ({ tool }) => {
       }}
       loadingContent="Please answer the questions in the popup..."
       error={errorMessage}
+      expandable={questionCount > 0 && toolStatus === 'completed' && !!answers}
     >
       {questionCount > 0 && toolStatus === 'completed' && answers && (
-        <ExpandableSection
-          label={`View questions & answers (${questionCount})`}
-          bodyClassName="p-2"
-        >
+        <div className="border-t border-border/50 p-3 dark:border-border-dark/50">
           <div className="space-y-3">
             {questions.map((q, index) => {
               const answer = answers[`question_${index}`];
@@ -58,7 +56,7 @@ export const AskUserQuestion: React.FC<AskUserQuestionProps> = ({ tool }) => {
               );
             })}
           </div>
-        </ExpandableSection>
+        </div>
       )}
     </ToolCard>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, memo } from 'react';
+import React, { useState, useMemo, memo } from 'react';
 import { ChevronDown, ChevronRight, Brain } from 'lucide-react';
 import { Button } from '@/components/ui';
 
@@ -8,18 +8,10 @@ interface ThinkingBlockProps {
 }
 
 const ThinkingBlockInner: React.FC<ThinkingBlockProps> = ({ content, isActiveThinking }) => {
-  const [isExpanded, setIsExpanded] = useState(isActiveThinking);
-
-  useEffect(() => {
-    if (isActiveThinking) {
-      setIsExpanded(true);
-    }
-  }, [isActiveThinking]);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpanded = () => {
-    if (!isActiveThinking) {
-      setIsExpanded((prev) => !prev);
-    }
+    setIsExpanded((prev) => !prev);
   };
 
   const previewText = useMemo(() => {
@@ -39,9 +31,8 @@ const ThinkingBlockInner: React.FC<ThinkingBlockProps> = ({ content, isActiveThi
     <div className="group relative overflow-hidden rounded-lg border border-border bg-surface-secondary transition-all duration-200 dark:border-border-dark dark:bg-surface-dark-secondary">
       <Button
         onClick={toggleExpanded}
-        disabled={isActiveThinking}
         variant="unstyled"
-        className={`flex w-full items-center gap-2 px-3 py-2 text-left transition-colors ${!isActiveThinking ? 'cursor-pointer hover:bg-surface-hover dark:hover:bg-surface-dark-hover' : 'cursor-default'}`}
+        className="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left transition-colors hover:bg-surface-hover dark:hover:bg-surface-dark-hover"
       >
         <div className="flex-shrink-0 rounded-md bg-surface-tertiary p-1.5 dark:bg-surface-dark-tertiary">
           <Brain className="h-3.5 w-3.5 text-text-secondary dark:text-text-dark-tertiary" />
@@ -67,22 +58,20 @@ const ThinkingBlockInner: React.FC<ThinkingBlockProps> = ({ content, isActiveThi
                 />
               </div>
             )}
-            {!isExpanded && !isActiveThinking && content && (
+            {!isExpanded && content && (
               <span className="max-w-52 truncate text-2xs text-text-secondary dark:text-text-dark-tertiary">
                 {previewText}
               </span>
             )}
           </div>
         </div>
-        {!isActiveThinking && (
-          <div className="flex-shrink-0 text-text-tertiary dark:text-text-dark-tertiary">
-            {isExpanded ? (
-              <ChevronDown className="h-3.5 w-3.5" />
-            ) : (
-              <ChevronRight className="h-3.5 w-3.5" />
-            )}
-          </div>
-        )}
+        <div className="flex-shrink-0 text-text-tertiary dark:text-text-dark-tertiary">
+          {isExpanded ? (
+            <ChevronDown className="h-3.5 w-3.5" />
+          ) : (
+            <ChevronRight className="h-3.5 w-3.5" />
+          )}
+        </div>
       </Button>
 
       <div

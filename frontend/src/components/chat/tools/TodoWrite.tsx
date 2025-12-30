@@ -1,7 +1,7 @@
 import React from 'react';
 import { ListTodo, CheckCircle2, Circle, Clock } from 'lucide-react';
 import type { ToolAggregate } from '@/types';
-import { ExpandableSection, ToolCard } from './common';
+import { ToolCard } from './common';
 
 interface Todo {
   content: string;
@@ -68,13 +68,11 @@ export const TodoWrite: React.FC<TodoWriteProps> = ({ tool }) => {
       }}
       loadingContent="Updating todo list..."
       error={errorMessage}
+      expandable={todoCount > 0 && toolStatus === 'completed'}
     >
       {todoCount > 0 && toolStatus === 'completed' && (
-        <ExpandableSection
-          label={`View todos (${todoCount} total)`}
-          meta={summaryMeta}
-          bodyClassName="p-2"
-        >
+        <div className="border-t border-border/50 p-3 dark:border-border-dark/50">
+          <div className="mb-2 flex gap-3 text-2xs">{summaryMeta}</div>
           <div className="space-y-1">
             {todos.map((todo, index) => (
               <div
@@ -82,7 +80,6 @@ export const TodoWrite: React.FC<TodoWriteProps> = ({ tool }) => {
                 className="flex items-center gap-2 rounded-md py-1 transition-colors hover:bg-surface-secondary dark:hover:bg-surface-dark-secondary/30"
               >
                 <div className="flex-shrink-0">{getTodoStatusIcon(todo.status)}</div>
-
                 <div className="min-w-0 flex-1">
                   <p
                     className={`text-xs ${
@@ -97,7 +94,7 @@ export const TodoWrite: React.FC<TodoWriteProps> = ({ tool }) => {
               </div>
             ))}
           </div>
-        </ExpandableSection>
+        </div>
       )}
     </ToolCard>
   );
