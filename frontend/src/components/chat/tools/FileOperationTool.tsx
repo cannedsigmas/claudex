@@ -120,21 +120,33 @@ const ReadContent: React.FC<{ tool: ToolAggregate }> = ({ tool }) => {
   );
 };
 
-const OPERATION_CONFIGS: Record<'read' | 'edit' | 'write', OperationConfig> = {
+interface TitleConfig {
+  inProgress: string;
+  completed: string;
+  failed: string;
+}
+
+const OPERATION_CONFIGS: Record<
+  'read' | 'edit' | 'write',
+  OperationConfig & { titles: TitleConfig }
+> = {
   read: {
     icon: FileSearch,
     titlePrefix: 'Read',
     loadingContent: 'Loading file content...',
+    titles: { inProgress: 'Reading', completed: 'Read', failed: 'Failed to read' },
   },
   edit: {
     icon: FileEditIcon,
     titlePrefix: 'Edit',
     loadingContent: 'Applying changes...',
+    titles: { inProgress: 'Editing', completed: 'Edited', failed: 'Failed to edit' },
   },
   write: {
     icon: FilePlus,
     titlePrefix: 'Write',
     loadingContent: 'Writing file...',
+    titles: { inProgress: 'Writing', completed: 'Wrote', failed: 'Failed to write' },
   },
 };
 
@@ -239,7 +251,16 @@ export const FileOperationTool: React.FC<FileOperationToolProps> = ({ tool, vari
     <ToolCard
       icon={<Icon className="h-3.5 w-3.5 text-text-secondary dark:text-text-dark-tertiary" />}
       status={toolStatus}
-      title={`${config.titlePrefix} ${filePath}`}
+      title={(status) => {
+        switch (status) {
+          case 'completed':
+            return `${config.titles.completed} ${filePath}`;
+          case 'failed':
+            return `${config.titles.failed} ${filePath}`;
+          default:
+            return `${config.titles.inProgress} ${filePath}`;
+        }
+      }}
       loadingContent={config.loadingContent}
       error={errorMessage}
       expandable={Boolean(hasExpandableContent)}

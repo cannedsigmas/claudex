@@ -21,13 +21,11 @@ const BashToolInner: React.FC<{ tool: ToolAggregate }> = ({ tool }) => {
   const command = input?.command ?? '';
   const description = input?.description;
 
-  const title = description
-    ? description
-    : command
-      ? command.length > 50
-        ? `$ ${command.slice(0, 47)}...`
-        : `$ ${command}`
-      : 'Run command';
+  const truncatedCommand = command
+    ? command.length > 50
+      ? `${command.slice(0, 47)}...`
+      : command
+    : '';
 
   const output = formatOutput(tool.result);
   const hasExpandableContent =
@@ -37,7 +35,18 @@ const BashToolInner: React.FC<{ tool: ToolAggregate }> = ({ tool }) => {
     <ToolCard
       icon={<Terminal className="h-3.5 w-3.5 text-text-secondary dark:text-text-dark-tertiary" />}
       status={tool.status}
-      title={title}
+      title={(status) => {
+        if (description) return description;
+        if (!command) return status === 'completed' ? 'Ran command' : 'Run command';
+        switch (status) {
+          case 'completed':
+            return `Ran: ${truncatedCommand}`;
+          case 'failed':
+            return `Failed: ${truncatedCommand}`;
+          default:
+            return `Running: ${truncatedCommand}`;
+        }
+      }}
       loadingContent="Running command..."
       error={tool.error}
       expandable={hasExpandableContent}

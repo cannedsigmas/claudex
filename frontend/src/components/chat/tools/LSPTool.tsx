@@ -39,9 +39,7 @@ const LSPToolInner: React.FC<{ tool: ToolAggregate }> = ({ tool }) => {
   const filename = extractFilename(filePath);
   const location =
     line !== undefined ? `:${line}${character !== undefined ? `:${character}` : ''}` : '';
-  const title = operation
-    ? `LSP ${operation}: ${filename}${location}`
-    : `LSP: ${filename}${location}`;
+  const opLabel = operation ?? 'query';
 
   const result = formatResult(tool.result);
   const hasExpandableContent =
@@ -51,8 +49,17 @@ const LSPToolInner: React.FC<{ tool: ToolAggregate }> = ({ tool }) => {
     <ToolCard
       icon={<Code className="h-3.5 w-3.5 text-text-secondary dark:text-text-dark-tertiary" />}
       status={tool.status}
-      title={title}
-      loadingContent={`Running ${operation}...`}
+      title={(status) => {
+        switch (status) {
+          case 'completed':
+            return `LSP ${opLabel}: ${filename}${location}`;
+          case 'failed':
+            return `LSP ${opLabel} failed: ${filename}${location}`;
+          default:
+            return `LSP running ${opLabel}: ${filename}${location}`;
+        }
+      }}
+      loadingContent={`Running ${opLabel}...`}
       error={tool.error}
       expandable={hasExpandableContent}
     >

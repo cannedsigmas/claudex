@@ -20,7 +20,7 @@ const TaskOutputToolInner: React.FC<{ tool: ToolAggregate }> = ({ tool }) => {
   const input = tool.input as TaskOutputInput | undefined;
   const taskId = input?.task_id ?? '';
   const truncatedId = taskId.length > 12 ? `${taskId.slice(0, 12)}...` : taskId;
-  const title = taskId ? `Task output: ${truncatedId}` : 'Task output';
+  const idSuffix = taskId ? `: ${truncatedId}` : '';
 
   const output = formatOutput(tool.result);
   const hasOutput = output.length > 0 && tool.status === 'completed';
@@ -31,7 +31,16 @@ const TaskOutputToolInner: React.FC<{ tool: ToolAggregate }> = ({ tool }) => {
         <SquareTerminal className="h-3.5 w-3.5 text-text-secondary dark:text-text-dark-tertiary" />
       }
       status={tool.status}
-      title={title}
+      title={(status) => {
+        switch (status) {
+          case 'completed':
+            return `Got task output${idSuffix}`;
+          case 'failed':
+            return `Failed to get task output${idSuffix}`;
+          default:
+            return `Getting task output${idSuffix}`;
+        }
+      }}
       loadingContent="Waiting for task output..."
       error={tool.error}
       expandable={hasOutput}
@@ -51,7 +60,7 @@ const BashOutputToolInner: React.FC<{ tool: ToolAggregate }> = ({ tool }) => {
   const input = tool.input as TaskOutputInput | undefined;
   const bashId = input?.bash_id ?? '';
   const truncatedId = bashId.length > 12 ? `${bashId.slice(0, 12)}...` : bashId;
-  const title = bashId ? `Bash output: ${truncatedId}` : 'Bash output';
+  const idSuffix = bashId ? `: ${truncatedId}` : '';
 
   const output = formatOutput(tool.result);
   const hasOutput = output.length > 0 && tool.status === 'completed';
@@ -62,7 +71,16 @@ const BashOutputToolInner: React.FC<{ tool: ToolAggregate }> = ({ tool }) => {
         <SquareTerminal className="h-3.5 w-3.5 text-text-secondary dark:text-text-dark-tertiary" />
       }
       status={tool.status}
-      title={title}
+      title={(status) => {
+        switch (status) {
+          case 'completed':
+            return `Got bash output${idSuffix}`;
+          case 'failed':
+            return `Failed to get bash output${idSuffix}`;
+          default:
+            return `Getting bash output${idSuffix}`;
+        }
+      }}
       loadingContent="Waiting for bash output..."
       error={tool.error}
       expandable={hasOutput}

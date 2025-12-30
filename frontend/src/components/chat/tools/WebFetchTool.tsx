@@ -27,8 +27,7 @@ const WebFetchToolInner: React.FC<{ tool: ToolAggregate }> = ({ tool }) => {
   const url = input?.url ?? '';
   const prompt = input?.prompt ?? '';
 
-  const title = `Fetch: ${extractDomain(url)}`;
-
+  const domain = extractDomain(url);
   const result = formatResult(tool.result);
   const hasExpandableContent = url.length > 0 || (result.length > 0 && tool.status === 'completed');
 
@@ -36,7 +35,16 @@ const WebFetchToolInner: React.FC<{ tool: ToolAggregate }> = ({ tool }) => {
     <ToolCard
       icon={<Globe className="h-3.5 w-3.5 text-text-secondary dark:text-text-dark-tertiary" />}
       status={tool.status}
-      title={title}
+      title={(status) => {
+        switch (status) {
+          case 'completed':
+            return `Fetched: ${domain}`;
+          case 'failed':
+            return `Failed to fetch: ${domain}`;
+          default:
+            return `Fetching: ${domain}`;
+        }
+      }}
       loadingContent="Fetching content..."
       error={tool.error}
       expandable={hasExpandableContent}

@@ -24,13 +24,16 @@ const NotebookEditToolInner: React.FC<{ tool: ToolAggregate }> = ({ tool }) => {
   const cellType = input?.cell_type;
 
   const filename = extractFilename(notebookPath);
-  const modeLabels: Record<EditMode, string> = {
-    replace: 'Edit cell in',
-    insert: 'Insert cell in',
-    delete: 'Delete cell in',
+  const inProgressLabels: Record<EditMode, string> = {
+    replace: 'Editing cell in',
+    insert: 'Inserting cell in',
+    delete: 'Deleting cell in',
   };
-  const modeLabel = modeLabels[editMode] ?? editMode;
-  const title = filename ? `${modeLabel} ${filename}` : modeLabel;
+  const completedLabels: Record<EditMode, string> = {
+    replace: 'Edited cell in',
+    insert: 'Inserted cell in',
+    delete: 'Deleted cell in',
+  };
 
   const hasExpandableContent = notebookPath.length > 0 || newSource.length > 0 || cellId;
 
@@ -38,7 +41,17 @@ const NotebookEditToolInner: React.FC<{ tool: ToolAggregate }> = ({ tool }) => {
     <ToolCard
       icon={<BookOpen className="h-3.5 w-3.5 text-text-secondary dark:text-text-dark-tertiary" />}
       status={tool.status}
-      title={title}
+      title={(status) => {
+        const suffix = filename ? ` ${filename}` : '';
+        switch (status) {
+          case 'completed':
+            return `${completedLabels[editMode] ?? editMode}${suffix}`;
+          case 'failed':
+            return `Failed to ${editMode} cell in${suffix}`;
+          default:
+            return `${inProgressLabels[editMode] ?? editMode}${suffix}`;
+        }
+      }}
       loadingContent="Editing notebook..."
       error={tool.error}
       expandable={Boolean(hasExpandableContent)}

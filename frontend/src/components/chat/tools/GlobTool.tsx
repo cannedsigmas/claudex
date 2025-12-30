@@ -19,10 +19,9 @@ const GlobToolInner: React.FC<{ tool: ToolAggregate }> = ({ tool }) => {
   const pattern = input?.pattern ?? '*';
   const path = input?.path;
 
-  const title = path ? `Find: ${pattern} in ${path}` : `Find: ${pattern}`;
-
   const files = parseResult(tool.result);
   const hasFiles = files.length > 0 && tool.status === 'completed';
+  const locationSuffix = path ? ` in ${path}` : '';
 
   return (
     <ToolCard
@@ -30,7 +29,16 @@ const GlobToolInner: React.FC<{ tool: ToolAggregate }> = ({ tool }) => {
         <FolderSearch className="h-3.5 w-3.5 text-text-secondary dark:text-text-dark-tertiary" />
       }
       status={tool.status}
-      title={title}
+      title={(status) => {
+        switch (status) {
+          case 'completed':
+            return `Found: ${pattern}${locationSuffix}`;
+          case 'failed':
+            return `Failed to find: ${pattern}${locationSuffix}`;
+          default:
+            return `Finding: ${pattern}${locationSuffix}`;
+        }
+      }}
       loadingContent="Searching for files..."
       error={tool.error}
       expandable={hasFiles}

@@ -10,13 +10,22 @@ interface KillShellInput {
 const KillShellToolInner: React.FC<{ tool: ToolAggregate }> = ({ tool }) => {
   const input = tool.input as KillShellInput | undefined;
   const shellId = input?.shell_id ?? '';
-  const title = shellId ? `Kill shell: ${shellId}` : 'Kill shell';
+  const idSuffix = shellId ? `: ${shellId}` : '';
 
   return (
     <ToolCard
       icon={<XCircle className="h-3.5 w-3.5 text-text-secondary dark:text-text-dark-tertiary" />}
       status={tool.status}
-      title={title}
+      title={(status) => {
+        switch (status) {
+          case 'completed':
+            return `Killed shell${idSuffix}`;
+          case 'failed':
+            return `Failed to kill shell${idSuffix}`;
+          default:
+            return `Killing shell${idSuffix}`;
+        }
+      }}
       loadingContent="Terminating shell..."
       error={tool.error}
     />

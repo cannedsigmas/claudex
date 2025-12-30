@@ -30,16 +30,24 @@ const GrepToolInner: React.FC<{ tool: ToolAggregate }> = ({ tool }) => {
   const pattern = input?.pattern ?? '';
   const outputMode = input?.output_mode ?? 'files_with_matches';
 
-  const title = `Search: "${pattern}" (${MODE_LABELS[outputMode]})`;
-
   const result = formatResult(tool.result);
   const hasResult = result.length > 0 && tool.status === 'completed';
+  const modeLabel = MODE_LABELS[outputMode];
 
   return (
     <ToolCard
       icon={<FileSearch className="h-3.5 w-3.5 text-text-secondary dark:text-text-dark-tertiary" />}
       status={tool.status}
-      title={title}
+      title={(status) => {
+        switch (status) {
+          case 'completed':
+            return `Searched: "${pattern}" (${modeLabel})`;
+          case 'failed':
+            return `Search failed: "${pattern}"`;
+          default:
+            return `Searching: "${pattern}" (${modeLabel})`;
+        }
+      }}
       loadingContent="Searching..."
       error={tool.error}
       expandable={hasResult}

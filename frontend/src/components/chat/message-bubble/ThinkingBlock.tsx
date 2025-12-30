@@ -8,7 +8,7 @@ interface ThinkingBlockProps {
 }
 
 const ThinkingBlockInner: React.FC<ThinkingBlockProps> = ({ content, isActiveThinking }) => {
-  const [isExpanded, setIsExpanded] = useState(isActiveThinking);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   useEffect(() => {
     if (isActiveThinking) {
