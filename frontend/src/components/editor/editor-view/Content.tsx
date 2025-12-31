@@ -65,12 +65,12 @@ export const Content = memo(function Content({
         onMount={onMount}
         loading={
           <div
-            className={`flex h-full items-center justify-center text-text-secondary dark:text-text-dark-secondary ${theme === 'light' ? 'bg-surface-secondary' : 'bg-surface-dark-secondary'}`}
+            className={`flex h-full items-center justify-center text-text-secondary dark:text-text-dark-secondary ${theme === 'custom-light' ? 'bg-surface-secondary' : 'bg-surface-dark-secondary'}`}
           >
             Loading editor...
           </div>
         }
-        className={theme === 'light' ? 'bg-surface-secondary' : 'bg-surface-dark-secondary'}
+        className={theme === 'custom-light' ? 'bg-surface-secondary' : 'bg-surface-dark-secondary'}
       />
     </div>
   );
