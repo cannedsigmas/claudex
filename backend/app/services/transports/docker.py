@@ -189,7 +189,7 @@ class DockerSandboxTransport(BaseSandboxTransport):
 
         try:
             while True:
-                timeout = 5.0 if self._ready else 0.2
+                timeout = 1.0 if self._ready else 0.2
                 data = await loop.run_in_executor(
                     self._executor, self._recv_with_select, timeout
                 )
