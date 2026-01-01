@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import select
+import socket
 from collections.abc import AsyncIterable
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import suppress
@@ -77,7 +78,7 @@ class DockerSandboxTransport(BaseSandboxTransport):
     ) -> tuple[str, Any]:
         exec_result = self._container.client.api.exec_create(
             self._container.id,
-            cmd=["bash", "-c", command_line],
+            cmd=["bash", "-c", f"exec {command_line}"],
             stdin=True,
             tty=False,
             environment=envs,
@@ -189,7 +190,24 @@ class DockerSandboxTransport(BaseSandboxTransport):
 
     async def _send_eof(self) -> None:
         loop = asyncio.get_running_loop()
-        await loop.run_in_executor(self._executor, lambda: self._socket_send(b"\x04"))
+        await loop.run_in_executor(self._executor, self._shutdown_socket_write)
+
+    def _shutdown_socket_write(self) -> None:
+        if not self._socket:
+            return
+        if hasattr(self._socket, "shutdown"):
+            try:
+                self._socket.shutdown(socket.SHUT_WR)
+                return
+            except Exception:
+                pass
+        if hasattr(self._socket, "_sock"):
+            try:
+                self._socket._sock.shutdown(socket.SHUT_WR)
+                return
+            except Exception:
+                pass
+        self._socket_send(b"\x04")
 
     def _get_socket_fd(self) -> int | None:
         if not self._socket:
