@@ -78,16 +78,10 @@ MCP_TYPE_CONFIGS: dict[str, dict[str, Any]] = {
 
 
 class SessionHandler:
-    def __init__(
-        self,
-        agent_service: "ClaudeAgentService",
-        session_callback: Callable[[str], None] | None,
-    ) -> None:
-        self.agent_service = agent_service
+    def __init__(self, session_callback: Callable[[str], None] | None) -> None:
         self.session_callback = session_callback
 
     def __call__(self, new_session_id: str) -> None:
-        self.agent_service.current_session_id = new_session_id
         if self.session_callback:
             self.session_callback(new_session_id)
 
@@ -252,7 +246,7 @@ class ClaudeAgentService:
     def _create_session_handler(
         self, session_callback: Callable[[str], None] | None
     ) -> SessionHandler:
-        return SessionHandler(self, session_callback)
+        return SessionHandler(session_callback)
 
     async def cancel_active_stream(self) -> None:
         if self._active_transport:

@@ -74,5 +74,3 @@ class UserUsage(BaseModel):
     messages_used_today: int
     daily_message_limit: int | None
     messages_remaining: int
-
-
